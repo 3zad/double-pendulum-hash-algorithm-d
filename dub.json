@@ -1,0 +1,13 @@
+{
+	"authors": [
+		"zacharyalexander"
+	],
+	"copyright": "Copyright © 2025, zacharyalexander",
+	"dependencies": {
+		"raylib-d": "~>5.5.1"
+	},
+	"libs" : ["raylib"],
+	"description": "Encrpytion using a double pendulum",
+	"license": "proprietary",
+	"name": "double-pendulum-encryption-d"
+}

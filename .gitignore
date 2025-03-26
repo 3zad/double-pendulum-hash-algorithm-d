@@ -1,0 +1,17 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/double-pendulum-encryption-d
+double-pendulum-encryption-d.so
+double-pendulum-encryption-d.dylib
+double-pendulum-encryption-d.dll
+double-pendulum-encryption-d.a
+double-pendulum-encryption-d.lib
+double-pendulum-encryption-d-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst
+
