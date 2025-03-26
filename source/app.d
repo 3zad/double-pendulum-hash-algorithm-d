@@ -7,8 +7,13 @@ import std.math;
 import std.math.constants;
 import std.format;
 
+import hash_components;
+import pure_implementation;
+
 void main() {
-    string toHash = "password123!";
+    benchmark();
+
+    string toHash = "the quick brown fox jumps over the lazy dog";
 
     ubyte[] byteArr;
     foreach (c; toHash) {
@@ -37,7 +42,7 @@ void main() {
     theta1 /= (byteArr.length/16);
     theta2 /= (byteArr.length/16);
 
-    auto d = new DoublePendulum(omega1, omega2, 200, 200, 10, 10, theta1, theta2, 100);
+    auto d = new DoublePendulum(omega1, omega2, 200, 200, 10, 10, theta1, theta2, 9.81);
     d.run();
 }
 
@@ -52,8 +57,8 @@ class DoublePendulum {
     double m1;
     double m2;
 
-    double t1;
-    double t2;
+    double theta1;
+    double theta2;
 
     double g;
 
@@ -77,10 +82,10 @@ class DoublePendulum {
         this.l2 = length2;
         this.m1 = mass1;
         this.m2 = mass2;
-        this.t1 = theta1;
-        this.t2 = theta2;
+        this.theta1 = theta1;
+        this.theta2 = theta2;
         this.g = gravity;
-        this.dt = 0.0100001;
+        this.dt = 0.01;
 
         this.breadcrumbs = [];
         this.byteStream = [];
@@ -91,7 +96,7 @@ class DoublePendulum {
         SetConfigFlags(ConfigFlags.FLAG_WINDOW_ALWAYS_RUN);
         InitWindow(512, 512, "Double pendulum simulation");
         // High FPS to allow smooth and accurate simulations (possible to set dt smaller)
-        SetTargetFPS(10000000);
+        SetTargetFPS(100_000);
 
         scope (exit) CloseWindow();
 
@@ -102,80 +107,40 @@ class DoublePendulum {
             
             BeginDrawing();
 
-            // RK4 formula
-            double k1_omega1 = dt * f1(t1, t2, omega1, omega2);
-            double k1_omega2 = dt * f2(t1, t2, omega1, omega2);
-
-            double k2_omega1 = dt * f1(t1 + k1_omega1 / 2, t2 + k1_omega2 / 2,
-                    omega1 + k1_omega1 / 2, omega2 + k1_omega2 / 2);
-            double k2_omega2 = dt * f2(t1 + k1_omega1 / 2, t2 + k1_omega2 / 2,
-                    omega1 + k1_omega1 / 2, omega2 + k1_omega2 / 2);
-
-            double k3_omega1 = dt * f1(t1 + k2_omega1 / 2, t2 + k2_omega2 / 2,
-                    omega1 + k2_omega1 / 2, omega2 + k2_omega2 / 2);
-            double k3_omega2 = dt * f2(t1 + k2_omega1 / 2, t2 + k2_omega2 / 2,
-                    omega1 + k2_omega1 / 2, omega2 + k2_omega2 / 2);
-
-            double k4_omega1 = dt * f1(t1 + k3_omega1, t2 + k3_omega2,
-                    omega1 + k3_omega1, omega2 + k3_omega2);
-            double k4_omega2 = dt * f2(t1 + k3_omega1, t2 + k3_omega2,
-                    omega1 + k3_omega1, omega2 + k3_omega2);
-
-            omega1 += (k1_omega1 + 2 * k2_omega1 + 2 * k3_omega1 + k4_omega1) / 6;
-            omega2 += (k1_omega2 + 2 * k2_omega2 + 2 * k3_omega2 + k4_omega2) / 6;
-
-            t1 += omega1 * dt;
-            t2 += omega2 * dt;
+            incrementVelocitiesAndThetas(&omega1, &omega2, &theta1, &theta2);
 
             draw();
             EndDrawing();
         }
     }
 
-    // Helper function for RK4
-    double f1(double t1, double t2, double w1, double w2) {
-        double num1 = -g * (2 * m1 + m2) * sin(t1);
-        double num2 = -m2 * g * sin(t1 - 2 * t2);
-        double num3 = -2 * sin(t1 - t2) * m2;
-        double num4 = w2 * w2 * l2 + w1 * w1 * l1 * cos(t1 - t2);
-        double den = l1 * (2 * m1 + m2 - m2 * cos(2 * t1 - 2 * t2));
-        return (num1 + num2 + num3 * num4) / den;
-    }
-
-    // Helper function for RK4
-    double f2(double t1, double t2, double w1, double w2) {
-        double num1 = 2 * sin(t1 - t2);
-        double num2 = (w1 * w1 * l1 * (m1 + m2) + g * (m1 + m2) * cos(t1)
-                + w2 * w2 * l2 * m2 * cos(t1 - t2));
-        double den = l2 * (2 * m1 + m2 - m2 * cos(2 * t1 - 2 * t2));
-        return (num1 * num2) / den;
-    }
 
     void draw() {
-        int x1 = originX + to!(int)(l1 * sin(t1));
-        int y1 = originY + to!(int)(l1 * cos(t1));
-        int x2 = x1 + to!(int)(l2 * sin(t2));
-        int y2 = y1 + to!(int)(l2 * cos(t2));
+        int x1 = to!(int)(l1 * sin(theta1));
+        int y1 = to!(int)(l1 * cos(theta1));
+        int x2 = x1 + to!(int)(l2 * sin(theta2));
+        int y2 = y1 + to!(int)(l2 * cos(theta2));
 
-        if (fabs(l2 * sin(t2)) % 1 < 0.001) {
-            breadcrumbs ~= [x2-originX, y2-originY, 1];
-            byteStream ~= cast(ubyte)(fabs((omega1*omega2*t1*t2)%255));
+        if (fabs(l2 * sin(theta2)) % 1 < 0.001) {
+            breadcrumbs ~= [x2, y2, 1];
+            byteStream ~= cast(ubyte)(fabs((omega1*omega2*theta1*theta2)%255));
             if (byteStream.length == 32) {
+                // Pauses the simulation indefinitely.
                 dt = 0;
                 writeln(toHex(byteStream));
             }
         }
 
-        else if (fabs(l2 * sin(t2)) % 1 < 0.01) {
-            breadcrumbs ~= [x2-originX, y2-originY, 0];
+        else if (fabs(l2 * sin(theta2)) % 1 < 0.01) {
+            breadcrumbs ~= [x2, y2, 0];
         }
         
 
         ClearBackground(Colors.BLACK);
-        DrawLineV(Vector2(originX, originY), Vector2(x1, y1), Colors.WHITE);
-        DrawLineV(Vector2(x1, y1), Vector2(x2, y2), Colors.WHITE);
-        DrawCircle(x1, y1, 10, Colors.RED);
-        DrawCircle(x2, y2, 10, Colors.RED);
+        DrawLineV(Vector2(originX, originY), Vector2(originX+x1, originY+y1), Colors.WHITE);
+        DrawLineV(Vector2(originX+x1, originY+y1), Vector2(originX+x2, originY+y2), Colors.WHITE);
+        DrawCircle(originX+x1, originY+y1, 10, Colors.RED);
+        DrawCircle(originX+x2, originY+y2, 10, Colors.RED);
 
         foreach (arr; breadcrumbs) {
             Color color;
@@ -186,15 +151,5 @@ class DoublePendulum {
             }
             DrawCircle(arr[0]+originX, arr[1]+originY, 2, color);
         }
-    }
-
-    string toHex(ubyte[] arr) {
-        string hexString = "";
-        
-        foreach (ubyte b; arr) {
-            hexString ~= to!string(format("%02X", b));
-        }
-        
-        return hexString;
     }
 }
