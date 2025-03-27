@@ -11,36 +11,11 @@ import hash_components;
 import pure_implementation;
 
 void main() {
-    benchmark();
+    //benchmark();
 
-    string toHash = "the quick brown fox jumps over the lazy dog";
-
-    ubyte[] byteArr;
-    foreach (c; toHash) {
-        byteArr ~= to!(ubyte)(c);
-    }
-
-    while (byteArr.length % 16 != 0) {
-        // Collision prone... maybe... fix later
-        byteArr ~= 0xFF;
-    }
-
-    double omega1 = 0;
-    double omega2 = 0;
-    double theta1 = 0;
-    double theta2 = 0;
-
-    for (int i = 0; i < byteArr.length; i +=16) {
-        omega1 += to!(double)(4*byteArr[i]+3*byteArr[i+1]+2*byteArr[i+2]+byteArr[i+3])/(1024*4*3*2);
-        omega2 += to!(double)(4*byteArr[i+4]+3*byteArr[i+5]+2*byteArr[i+6]+byteArr[i+7])/(1024*4*3*2);
-        theta1 += to!(double)(4*byteArr[i+8]+3*byteArr[i+9]+2*byteArr[i+10]+byteArr[i+11]);
-        theta2 += to!(double)(4*byteArr[i+12]+3*byteArr[i+13]+2*byteArr[i+14]+byteArr[i+15]);
-    }
-
-    omega1 /= (byteArr.length/16);
-    omega2 /= (byteArr.length/16);
-    theta1 /= (byteArr.length/16);
-    theta2 /= (byteArr.length/16);
+    double omega1, omega2, theta1, theta2;
+    
+    setSartingVariables("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", &omega1, &omega2, &theta1, &theta2);
 
     auto d = new DoublePendulum(omega1, omega2, 200, 200, 10, 10, theta1, theta2, 9.81);
     d.run();

@@ -1,18 +1,49 @@
 module hash_components;
 
-import std.math;
+import core.math : sin, cos;
 import std.conv;
 import std.format;
 
 public string toHex(ubyte[] arr) {
-        string hexString = "";
-        
-        foreach (ubyte b; arr) {
+    string hexString = "";
+
+    foreach (ubyte b; arr) {
             hexString ~= to!string(format("%02X", b));
-        }
-        
-        return hexString;
     }
+
+    return hexString;
+}
+
+public void setSartingVariables(string input, double* omega1, double* omega2, double* theta1, double* theta2) {
+    ubyte[] byteArr;
+    foreach (c; input) {
+        byteArr ~= to!(ubyte)(c);
+    }
+
+    while (byteArr.length % 16 != 0) {
+        // Collision prone... maybe... fix later
+        byteArr ~= 0xFF;
+    }
+
+    (*omega1) = 0;
+    (*omega2) = 0;
+    (*theta1) = 0;
+    (*theta2) = 0;
+
+    double weight = 6.4;
+    for (int i = 0; i < byteArr.length; i +=16) {
+        (*omega1) += weight*to!(double)(4*byteArr[i]+3*byteArr[i+1]+2*byteArr[i+2]+byteArr[i+3])/(1024*4*3*2);
+        (*omega2) += weight*to!(double)(4*byteArr[i+4]+3*byteArr[i+5]+2*byteArr[i+6]+byteArr[i+7])/(1024*4*3*2);
+        (*theta1) += weight*to!(double)(4*byteArr[i+8]+3*byteArr[i+9]+2*byteArr[i+10]+byteArr[i+11]);
+        (*theta2) += weight*to!(double)(4*byteArr[i+12]+3*byteArr[i+13]+2*byteArr[i+14]+byteArr[i+15]);
+        weight -= to!(double)(byteArr[i])%10/10;
+    }
+
+    (*omega1) /= (byteArr.length/16);
+    (*omega2) /= (byteArr.length/16);
+    (*theta1) /= (byteArr.length/16);
+    (*theta2) /= (byteArr.length/16);
+}
 
 public void incrementVelocitiesAndThetas(double* omega1, double* omega2, double* theta1, double* theta2) {
     // RK4 formula
