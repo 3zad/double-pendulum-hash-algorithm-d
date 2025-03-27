@@ -30,13 +30,13 @@ public void setSartingVariables(string input, double* omega1, double* omega2, do
     (*theta1) = 0;
     (*theta2) = 0;
 
-    double weight = 6.4;
+    double weight = 1.024;
     for (int i = 0; i < byteArr.length; i +=16) {
         (*omega1) += weight*to!(double)(4*byteArr[i]+3*byteArr[i+1]+2*byteArr[i+2]+byteArr[i+3])/(1024*4*3*2);
         (*omega2) += weight*to!(double)(4*byteArr[i+4]+3*byteArr[i+5]+2*byteArr[i+6]+byteArr[i+7])/(1024*4*3*2);
         (*theta1) += weight*to!(double)(4*byteArr[i+8]+3*byteArr[i+9]+2*byteArr[i+10]+byteArr[i+11]);
         (*theta2) += weight*to!(double)(4*byteArr[i+12]+3*byteArr[i+13]+2*byteArr[i+14]+byteArr[i+15]);
-        weight -= to!(double)(byteArr[i])%10/10;
+        weight -= to!(double)(byteArr[i])%16/100;
     }
 
     (*omega1) /= (byteArr.length/16);
