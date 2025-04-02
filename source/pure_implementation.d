@@ -34,6 +34,8 @@ void benchmark() {
     
     double iterations = 100;
     
+    
+
     writeln("Benchmark starting...");
     sw.start();
 

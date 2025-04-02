@@ -10,6 +10,7 @@ import std.format;
 import hash_components;
 import pure_implementation;
 import double_pendulum;
+import collisiontest;
 
 void main() {
     SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
@@ -20,8 +21,10 @@ void main() {
 
     scope (exit) CloseWindow();
 
-    auto d1 = new DoublePendulum("password123!");
-    auto d2 = new DoublePendulum("password124!");
+    collisionTest();
+
+    auto d1 = new DoublePendulum("05");
+    auto d2 = new DoublePendulum("31");
 
     int originX, originY;
 
