@@ -30,5 +30,7 @@ RK4 for accurate calculations and floating-point error reduction.
 
 ## Useage
 ```sh
+dub upgrade
+dub run raylib-d:install
 dub run
 ```

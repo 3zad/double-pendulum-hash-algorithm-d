@@ -2,6 +2,7 @@ module hash_components;
 
 import core.math : sin, cos;
 import std.conv;
+import std.stdio;
 import std.format;
 
 public string toHex(ubyte[] arr) {
@@ -16,13 +17,20 @@ public string toHex(ubyte[] arr) {
 
 public void setSartingVariables(string input, double* omega1, double* omega2, double* theta1, double* theta2) {
     ubyte[] byteArr;
+    int average = 0;
+    int count = 0;
+
     foreach (c; input) {
-        byteArr ~= to!(ubyte)(c);
+        ubyte curChar = to!(ubyte)(c);
+        byteArr ~= curChar;
+        average += curChar;
+        count++;
     }
 
+    average /= count;
+
     while (byteArr.length % 16 != 0) {
-        // Collision prone... maybe... fix later
-        byteArr ~= 0xFF;
+        byteArr ~= to!(ubyte)(average);
     }
 
     (*omega1) = 0;

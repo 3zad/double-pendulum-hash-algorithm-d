@@ -21,10 +21,10 @@ void main() {
 
     scope (exit) CloseWindow();
 
-    collisionTest();
+    //collisionTest();
 
-    auto d1 = new DoublePendulum("05");
-    auto d2 = new DoublePendulum("31");
+    auto d1 = new DoublePendulum("N9201");
+    auto d2 = new DoublePendulum("P5201");
 
     int originX, originY;
 

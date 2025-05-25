@@ -1,13 +1,1 @@
-{
-	"authors": [
-		"zacharyalexander"
-	],
-	"copyright": "Copyright © 2025, zacharyalexander",
-	"dependencies": {
-		"raylib-d": "~>5.5.1"
-	},
-	"libs" : ["raylib"],
-	"description": "Encrpytion using a double pendulum",
-	"license": "proprietary",
-	"name": "double-pendulum-encryption-d"
-}
+{"libs" : ["raylib"], "lflags-posix" : ["-L."], "lflags-osx" : ["-rpath", "@executable_path/"], "lflags-linux" : ["-rpath=$$ORIGIN"], "description" : "Encrpytion using a double pendulum", "name" : "double-pendulum-encryption-d", "dependencies" : {"raylib-d" : "~>5.5.1"}, "authors" : ["zacharyalexander"], "copyright" : "Copyright © 2025, zacharyalexander", "license" : "proprietary"}
