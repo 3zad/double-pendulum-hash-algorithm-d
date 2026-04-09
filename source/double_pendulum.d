@@ -34,7 +34,6 @@ class DoublePendulum {
     this(string input) {
         setSartingVariables(input, &omega1, &omega2, &theta1, &theta2);
         this.hash = doublePendulumHash(input);
-        writeln(to!int(hash[0..2], 16));
         primary = Color(to!ubyte(hash[0..2], 16), to!ubyte(hash[2..4], 16), to!ubyte(hash[4..6], 16), 255);
     }
 
@@ -64,6 +63,10 @@ class DoublePendulum {
         DrawLineV(Vector2(centerX+x1, centerY+y1), Vector2(centerX+x2, centerY+y2), Colors.WHITE);
         DrawCircle(centerX+x1, centerY+y1, 10, primary);
         DrawCircle(centerX+x2, centerY+y2, 10, primary);
+
+        // circle outline in white
+        DrawCircleLines(centerX+x1, centerY+y1, 10, Colors.WHITE);
+        DrawCircleLines(centerX+x2, centerY+y2, 10, Colors.WHITE);
 
         foreach (arr; breadcrumbs) {
             Color color;

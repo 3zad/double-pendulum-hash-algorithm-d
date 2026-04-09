@@ -33,6 +33,7 @@ void collisionTest() {
         }
 
         setSartingVariables(input, &o1, &o2, &t1, &t2);
+        
         pendulumVariableKey = to!(string)(o1) ~ to!(string)(o2) ~ to!(string)(t1) ~ to!(string)(t2);
         if (pendulumVariableKey in datastore) {
             writeln("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");

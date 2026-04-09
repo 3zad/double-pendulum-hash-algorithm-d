@@ -13,18 +13,20 @@ import double_pendulum;
 import collisiontest;
 
 void main() {
+
     SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
     SetConfigFlags(ConfigFlags.FLAG_WINDOW_ALWAYS_RUN);
     InitWindow(1024, 1024, "Double pendulum simulation");
     // High FPS to allow smooth and accurate simulations (possible to set dt smaller)
-    SetTargetFPS(10_000);
+    SetTargetFPS(100);
 
     scope (exit) CloseWindow();
 
-    collisionTest();
+    DoublePendulum[] pendulums;
 
-    auto d1 = new DoublePendulum("05");
-    auto d2 = new DoublePendulum("31");
+    for (int i = 0; i < 10; i++) {
+        pendulums ~= new DoublePendulum(to!string(i));
+    }
 
     int originX, originY;
 
@@ -35,8 +37,9 @@ void main() {
         
         BeginDrawing();
 
-        d1.draw(originX, originY);
-        d2.draw(originX, originY);
+        for (int i = 0; i < pendulums.length; i++) {
+            pendulums[i].draw(originX, originY);
+        }
 
         EndDrawing();
     }
