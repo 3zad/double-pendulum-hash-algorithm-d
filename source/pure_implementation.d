@@ -21,7 +21,10 @@ string doublePendulumHash(string input) {
         incrementVelocitiesAndThetas(&omega1, &omega2, &theta1, &theta2);
 
         if (fabs(200 * sin(theta2)) % 1 < 0.001) {
-            byteStream ~= cast(ubyte)(fabs((omega1*omega2*theta1*theta2)%255));
+            byteStream ~= (cast(ubyte*)&omega1)[0..1];
+            byteStream ~= (cast(ubyte*)&omega2)[0..1];
+            byteStream ~= (cast(ubyte*)&theta1)[0..1];
+            byteStream ~= (cast(ubyte*)&theta2)[0..1];
             if (byteStream.length == 32) {
                 return toHex(byteStream);
             }

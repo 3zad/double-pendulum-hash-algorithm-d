@@ -18,7 +18,7 @@ void main() {
     SetConfigFlags(ConfigFlags.FLAG_WINDOW_ALWAYS_RUN);
     InitWindow(1024, 1024, "Double pendulum simulation");
     // High FPS to allow smooth and accurate simulations (possible to set dt smaller)
-    SetTargetFPS(100);
+    SetTargetFPS(10000);
 
     scope (exit) CloseWindow();
 
