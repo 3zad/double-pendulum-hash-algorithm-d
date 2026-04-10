@@ -4,6 +4,7 @@ import std.stdio;
 import std.conv;
 
 import hash_components;
+import pure_implementation;
 
 char[] charSet = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','!','"','#','$','%','&','\'','(',')','*','+',',','-','.','/',':',';','<','=','>','?','@','[','\\',']','^','_','`','{','|','}','~'];
 
@@ -34,12 +35,9 @@ void collisionTest() {
 
         setSartingVariables(input, &o1, &o2, &t1, &t2);
         
-        pendulumVariableKey = to!(string)(o1) ~ to!(string)(o2) ~ to!(string)(t1) ~ to!(string)(t2);
+        pendulumVariableKey = extractHash(o1, o2, t1, t2).to!string;
         if (pendulumVariableKey in datastore) {
-            writeln("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            write("! COLLISION FOUND BETWEEN STRINGS ");
             writeln(input ~ " AND " ~ datastore[pendulumVariableKey]);
-            writeln("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             //break;
         }
         datastore[pendulumVariableKey] = input;

@@ -13,18 +13,18 @@ import double_pendulum;
 import collisiontest;
 
 void main() {
-
+    collisionTest();
     SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
     SetConfigFlags(ConfigFlags.FLAG_WINDOW_ALWAYS_RUN);
     InitWindow(1024, 1024, "Double pendulum simulation");
     // High FPS to allow smooth and accurate simulations (possible to set dt smaller)
-    SetTargetFPS(10000);
+    SetTargetFPS(100);
 
     scope (exit) CloseWindow();
 
     DoublePendulum[] pendulums;
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 1000; i++) {
         pendulums ~= new DoublePendulum(to!string(i));
     }
 

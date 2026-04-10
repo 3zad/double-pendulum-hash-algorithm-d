@@ -34,7 +34,7 @@ class DoublePendulum {
     this(string input) {
         setSartingVariables(input, &omega1, &omega2, &theta1, &theta2);
         this.hash = doublePendulumHash(input);
-        writeln("Hash for input " ~ input ~ ": " ~ hash);
+        // writeln("Hash for input " ~ input ~ ": " ~ hash);
         primary = Color(to!ubyte(hash[0..2], 16), to!ubyte(hash[2..4], 16), to!ubyte(hash[4..6], 16), 255);
     }
 

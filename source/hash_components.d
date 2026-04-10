@@ -39,7 +39,7 @@ public void setSartingVariables(string input, double* omega1, double* omega2, do
         byteArr ~= cast(ubyte)((originalLen >> s) & 0xFF);
     }
  
-    (*theta1) = PI_4;
+    (*theta1) = PI;
     (*theta2) = -PI/3.0;
     (*omega1)  = 0.5;
     (*omega2)  = -0.3;
@@ -74,19 +74,6 @@ public void setSartingVariables(string input, double* omega1, double* omega2, do
 
 private ulong rotl(ulong x, int k) {
     return (x << k) | (x >> (64 - k));
-}
-
-public ubyte[] extractHash(double omega1, double omega2, double theta1, double theta2, int steps = 512) {
-    for (int i = 0; i < steps; i++) {
-        incrementVelocitiesAndThetas(&omega1, &omega2, &theta1, &theta2);
-    }
-
-    ubyte[] result;
-    result ~= (cast(ubyte*)&theta1)[0..8];
-    result ~= (cast(ubyte*)&theta2)[0..8];
-    result ~= (cast(ubyte*)&omega1)[0..8];
-    result ~= (cast(ubyte*)&omega2)[0..8];
-    return result;
 }
 
 public void incrementVelocitiesAndThetas(double* omega1, double* omega2, double* theta1, double* theta2) {
